@@ -1,0 +1,8 @@
+//
+// ideaencrypt
+//
+
+#ifndef IDEAENCRYPT_IDEAENCRYPT_H
+#define IDEAENCRYPT_IDEAENCRYPT_H
+
+#endif /* IDEAENCRYPT_IDEAENCRYPT_H */

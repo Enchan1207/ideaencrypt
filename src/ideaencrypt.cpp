@@ -1,0 +1,4 @@
+//
+// ideaencrypt
+//
+#include "ideaencrypt.hpp"
