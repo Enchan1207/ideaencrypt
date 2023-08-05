@@ -3,6 +3,7 @@
 #
 
 .DS_Store
+.vscode
 build
 
 # Created by https://www.toptal.com/developers/gitignore/api/c,c++,cmake
