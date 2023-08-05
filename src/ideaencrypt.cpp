@@ -1,4 +1,8 @@
 //
 // ideaencrypt
 //
-#include "ideaencrypt.hpp"
+#include "ideaencrypt/key.hpp"
+
+namespace ideaencrypt {
+
+}  // namespace ideaencrypt
