@@ -60,7 +60,7 @@ TEST(KeyGenerationTest, TestGenerateSubKeys) {
     for (size_t i = 0; i < 4; i++) {
         EXPECT_EQ(iter.next(), 0x0000);
     }
-    EXPECT_EQ(iter.next(), 0b00000001);
+    EXPECT_EQ(iter.next(), 0x0001);
 
     // 二巡目 このタイミングで25ビット左にローテートされるはず
     // 0x0002 0003 0005 0000 0000 0000 0000 0001 から

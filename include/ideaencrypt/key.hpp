@@ -87,13 +87,6 @@ class SubKeyIterator final {
      */
     void rotateKey(size_t nbits);
 
-    /**
-     * @brief 鍵を左ローテートする
-     *
-     * @param nbits 移動量
-     */
-    void rotateKeyLeft(size_t nbits);
-
    public:
     /**
      * @brief 主鍵をもとに副鍵イテレータを初期化

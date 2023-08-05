@@ -3,6 +3,8 @@
 //
 #include "ideaencrypt/key.hpp"
 
+#include <iomanip>
+#include <iostream>
 #include <random>
 
 namespace ideaencrypt {
@@ -45,14 +47,29 @@ int MainKey::at(uint8_t index) const {
 }
 
 void SubKeyIterator::rotateKey(size_t nbits) {
-    for (size_t i = 0; i < 25; i++) {
-        // 最上位を取り出しておく
-        auto tmp = currentKey[0] >> 15;
-        for (size_t i = 0; i < 8; i++) {
-            // 上位bitを捨て、次の要素の最上位ビットを最下位に移動
-            currentKey[i] <<= 1;
-            currentKey[i] |= (i < 7) ? currentKey[i + 1] >> 15 : tmp;
+    auto rotateCount = nbits;
+
+    // 1要素内に収まらないローテートの場合は要素単位でずらす
+    while (rotateCount >= 16) {
+        auto first = currentKey[0];
+        for (size_t i = 0; i < 7; i++) {
+            currentKey[i] = currentKey[i + 1];
         }
+        currentKey[7] = first;
+        rotateCount -= 16;
+    }
+
+    // そこで終わるなら戻る
+    if (rotateCount == 0) {
+        return;
+    }
+
+    // 残りは地道にやる
+    auto first = currentKey[0] >> (16 - rotateCount);
+    for (size_t i = 0; i < 8; i++) {
+        // 上位bitを捨て、次の要素の上位ビットを下位に移動
+        currentKey[i] <<= rotateCount;
+        currentKey[i] |= (i < 7) ? currentKey[i + 1] >> (16 - rotateCount) : first;
     }
 }
 
