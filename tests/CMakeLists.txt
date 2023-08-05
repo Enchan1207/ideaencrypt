@@ -18,7 +18,7 @@ include(GoogleTest)
 # テストターゲットの構成
 add_executable(ideaencrypt_test)
 target_sources(ideaencrypt_test PRIVATE
-    test_ideaencrypt.cpp
+    test_keygen.cpp
 )
 target_link_libraries(ideaencrypt_test PRIVATE
     ideaencrypt
