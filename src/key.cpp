@@ -11,7 +11,7 @@ namespace ideaencrypt {
 
 IDEAKey::IDEAKey() {
     std::random_device random;
-    for (size_t i = 0; i < 16; i++) {
+    for (size_t i = 0; i < 8; i++) {
         parts[i] = random();
     }
 }
@@ -21,29 +21,22 @@ IDEAKey::IDEAKey(const std::string& phrase) {
 
     // フレーズがゼロ文字なら0で初期化
     if (length == 0) {
-        for (size_t i = 0; i < 16; i++) {
-            parts[i] = 0x00;
+        for (size_t i = 0; i < 8; i++) {
+            parts[i] = 0x0000;
         }
         return;
     }
 
-    // 1文字ずつ取り出して割り当て
-    for (size_t i = 0; i < 16; i++) {
-        parts[i] = phrase[i % length];
+    // 2文字ずつ取り出して割り当て
+    for (size_t i = 0; i < 8; i++) {
+        parts[i] = (phrase[(i * 2) % length] << 8) | phrase[(i * 2 + 1) % length];
     }
 }
 
-IDEAKey::IDEAKey(const uint8_t (&parts)[16]) {
-    for (size_t i = 0; i < 16; i++) {
+IDEAKey::IDEAKey(const SubKey (&parts)[8]) {
+    for (size_t i = 0; i < 8; i++) {
         this->parts[i] = parts[i];
     }
-}
-
-int IDEAKey::at(uint8_t index) const {
-    if (index >= 16) {
-        return -1;
-    }
-    return parts[index];
 }
 
 IDEAKey::iterator IDEAKey::subKeys() {
@@ -52,7 +45,7 @@ IDEAKey::iterator IDEAKey::subKeys() {
 
 IDEAKeyIterator::IDEAKeyIterator(const IDEAKey key) : currentIndex(0) {
     for (size_t i = 0; i < 8; i++) {
-        currentKey[i] = (key.at(i * 2) << 8) | key.at(i * 2 + 1);
+        currentKey[i] = key.parts[i];
     }
 }
 
@@ -84,8 +77,7 @@ void IDEAKeyIterator::rotateKey(size_t nbits) {
 }
 
 IDEAKeyIterator& IDEAKeyIterator::operator++() {
-    ++currentIndex;
-    if (currentIndex > 7) {
+    if (++currentIndex > 7) {
         rotateKey(25);
         currentIndex = 0;
     }
@@ -96,6 +88,10 @@ IDEAKeyIterator IDEAKeyIterator::operator++(int) {
     auto current = *this;
     this->operator++();
     return current;
+}
+
+const SubKey& IDEAKeyIterator::operator*() {
+    return currentKey[currentIndex];
 }
 
 }  // namespace ideaencrypt

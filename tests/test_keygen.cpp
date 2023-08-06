@@ -54,14 +54,11 @@ TEST(KeyGenerationTest, TestGenerateKey) {
     }
 
     // 即値で初期化
-    const uint8_t keyConstants[] =
-        {0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
-         0x21, 0x43, 0x65, 0x87, 0x09, 0xba, 0xdc, 0xfe};
+    const uint16_t keyConstants[] = {0x1234, 0x5678, 0x90ab, 0xcdef, 0x2143, 0x6587, 0x09ba, 0xdcfe};
     auto constKey = IDEAKey(keyConstants);
     auto constSubKey = constKey.subKeys();
     for (size_t i = 0; i < 8; i++, constSubKey++) {
-        auto tmp = (keyConstants[i * 2] << 8) | keyConstants[i * 2 + 1];
-        EXPECT_EQ(*constSubKey, tmp);
+        EXPECT_EQ(*constSubKey, keyConstants[i]);
     }
 }
 

@@ -13,6 +13,11 @@ namespace ideaencrypt {
 class IDEAKeyIterator;
 
 /**
+ * @brief IDEA暗号の副鍵
+ */
+using SubKey = uint16_t;
+
+/**
  * @brief IDEA暗号鍵 (128bit)
  */
 class IDEAKey final {
@@ -22,17 +27,7 @@ class IDEAKey final {
     /**
      * @brief 鍵格納領域
      */
-    uint8_t parts[16];
-
-    /**
-     * @brief 鍵の一部を取り出す
-     *
-     * @param index 取り出す位置(byte単位, 0~15)
-     * @return int 結果
-     *
-     * @note 範囲外のインデックスが渡された場合は-1が返ります。
-     */
-    int at(uint8_t index) const;
+    SubKey parts[8];
 
    public:
     typedef IDEAKeyIterator iterator;
@@ -56,9 +51,9 @@ class IDEAKey final {
      * @brief 配列から鍵を生成
      *
      * @param parts 生成元となる数列
-     * @note 引数partsの要素数は16である必要があります。
+     * @note 引数partsの要素数は8である必要があります。
      */
-    IDEAKey(const uint8_t (&parts)[16]);
+    IDEAKey(const SubKey (&parts)[8]);
 
     /**
      * @brief 副鍵イテレータを取得
@@ -69,21 +64,10 @@ class IDEAKey final {
 };
 
 /**
- * @brief IDEA暗号の副鍵
- */
-using SubKey = uint16_t;
-
-/**
  * @brief 鍵イテレータ
  */
 class IDEAKeyIterator final {
     friend IDEAKey;
-
-    using iterator_category = std::forward_iterator_tag;
-    using value_type = SubKey;
-    using difference_type = ptrdiff_t;
-    using pointer = SubKey*;
-    using reference = SubKey&;
 
    private:
     /**
@@ -115,9 +99,7 @@ class IDEAKeyIterator final {
 
     IDEAKeyIterator operator++(int);
 
-    const value_type& operator*() {
-        return currentKey[currentIndex];
-    }
+    const SubKey& operator*();
 };
 
 }  // namespace ideaencrypt
