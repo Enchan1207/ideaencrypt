@@ -94,4 +94,10 @@ const SubKey& IDEAKeyIterator::operator*() {
     return currentKey[currentIndex];
 }
 
+const SubKey IDEAKeyIterator::next() {
+    auto current = this->operator*();
+    this->operator++();
+    return current;
+}
+
 }  // namespace ideaencrypt

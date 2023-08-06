@@ -68,25 +68,25 @@ TEST(KeyGenerationTest, TestGenerateSubKeys) {
     auto iter = key.subKeys();
 
     // 一巡目
-    EXPECT_EQ(*(iter++), 0x0002);
-    EXPECT_EQ(*(iter++), 0x0003);
-    EXPECT_EQ(*(iter++), 0x0005);
+    EXPECT_EQ(iter.next(), 0x0002);
+    EXPECT_EQ(iter.next(), 0x0003);
+    EXPECT_EQ(iter.next(), 0x0005);
     for (size_t i = 0; i < 4; i++) {
-        EXPECT_EQ(*(iter++), 0x0000);
+        EXPECT_EQ(iter.next(), 0x0000);
     }
-    EXPECT_EQ(*(iter++), 0x0001);
+    EXPECT_EQ(iter.next(), 0x0001);
 
     // 二巡目 このタイミングで25ビット左にローテートされるはず
     // 0x0002 0003 0005 0000 0000 0000 0000 0001 から
     // 0x0600 0A00 0000 0000 0000 0000 0200 0400 となり、
     // 末尾にいた0x0001が副鍵の7つ目に0x0200=512となって現れる
-    EXPECT_EQ(*(iter++), 0x0600);
-    EXPECT_EQ(*(iter++), 0x0A00);
+    EXPECT_EQ(iter.next(), 0x0600);
+    EXPECT_EQ(iter.next(), 0x0A00);
     for (size_t i = 0; i < 4; i++) {
-        EXPECT_EQ(*(iter++), 0x0000);
+        EXPECT_EQ(iter.next(), 0x0000);
     }
-    EXPECT_EQ(*(iter++), 0x0200);
-    EXPECT_EQ(*(iter++), 0x0400);
+    EXPECT_EQ(iter.next(), 0x0200);
+    EXPECT_EQ(iter.next(), 0x0400);
 }
 
 // フレーズベースの副鍵の生成
@@ -102,6 +102,6 @@ TEST(KeyGenerationTest, TestGenerateSubKeyFromPhrase) {
         0x4cce, 0xad4d, 0x2e6c, 0x2eec, 0x2f2d, 0xee6d, 0x0d2d, 0xcdee,
         0x9a5c, 0xd85d, 0xd85e, 0x5bdc};
     for (size_t i = 0; i < 52; i++) {
-        EXPECT_EQ(expected[i], *(iter++));
+        EXPECT_EQ(expected[i], iter.next());
     }
 }

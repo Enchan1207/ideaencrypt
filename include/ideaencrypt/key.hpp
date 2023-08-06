@@ -100,6 +100,13 @@ class IDEAKeyIterator final {
     IDEAKeyIterator operator++(int);
 
     const SubKey& operator*();
+
+    /**
+     * @brief イテレータを進め、値を返す
+     *
+     * @return const SubKey& 副鍵
+     */
+    const SubKey next();
 };
 
 }  // namespace ideaencrypt
