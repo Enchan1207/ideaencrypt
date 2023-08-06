@@ -6,6 +6,7 @@
 #define IDEAENCRYPT_CIPHER_H
 
 #include <list>
+#include <memory>
 #include <sstream>
 
 #include "ideaencrypt/block.hpp"
