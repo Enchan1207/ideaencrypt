@@ -19,6 +19,7 @@ include(GoogleTest)
 add_executable(ideaencrypt_test)
 target_sources(ideaencrypt_test PRIVATE
     test_keygen.cpp
+    test_cipher.cpp
 )
 target_link_libraries(ideaencrypt_test PRIVATE
     ideaencrypt

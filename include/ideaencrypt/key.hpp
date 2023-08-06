@@ -30,7 +30,7 @@ class IDEAKey final {
     SubKey parts[8];
 
    public:
-    typedef IDEAKeyIterator iterator;
+    using iterator = IDEAKeyIterator;
 
     /**
      * @brief ランダムな値から鍵を生成
@@ -60,7 +60,7 @@ class IDEAKey final {
      *
      * @return IDEAKey::iterator 生成された副鍵イテレータ
      */
-    IDEAKey::iterator subKeys();
+    IDEAKey::iterator subKeys() const;
 };
 
 /**
