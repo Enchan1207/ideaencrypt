@@ -9,17 +9,17 @@
 
 namespace ideaencrypt {
 
-MainKey::MainKey() {
+IDEAKey::IDEAKey() {
     std::random_device random;
     for (size_t i = 0; i < 16; i++) {
         parts[i] = random();
     }
 }
 
-MainKey::MainKey(const std::string& phrase) {
+IDEAKey::IDEAKey(const std::string& phrase) {
     auto length = phrase.length();
 
-    // ゼロ文字なら主鍵は0で初期化
+    // フレーズがゼロ文字なら0で初期化
     if (length == 0) {
         for (size_t i = 0; i < 16; i++) {
             parts[i] = 0x00;
@@ -33,20 +33,30 @@ MainKey::MainKey(const std::string& phrase) {
     }
 }
 
-MainKey::MainKey(const uint8_t (&parts)[16]) {
+IDEAKey::IDEAKey(const uint8_t (&parts)[16]) {
     for (size_t i = 0; i < 16; i++) {
         this->parts[i] = parts[i];
     }
 }
 
-int MainKey::at(uint8_t index) const {
+int IDEAKey::at(uint8_t index) const {
     if (index >= 16) {
         return -1;
     }
     return parts[index];
 }
 
-void SubKeyIterator::rotateKey(size_t nbits) {
+IDEAKey::iterator IDEAKey::subKeys() {
+    return IDEAKeyIterator(*this);
+}
+
+IDEAKeyIterator::IDEAKeyIterator(const IDEAKey key) : currentIndex(0) {
+    for (size_t i = 0; i < 8; i++) {
+        currentKey[i] = (key.at(i * 2) << 8) | key.at(i * 2 + 1);
+    }
+}
+
+void IDEAKeyIterator::rotateKey(size_t nbits) {
     auto rotateCount = nbits;
 
     // 1要素内に収まらないローテートの場合は要素単位でずらす
@@ -73,20 +83,19 @@ void SubKeyIterator::rotateKey(size_t nbits) {
     }
 }
 
-void SubKeyIterator::reset() {
-    currentIndex = 0;
-    for (size_t i = 0; i < 8; i++) {
-        currentKey[i] = (mainKey.at(i * 2) << 8) | mainKey.at(i * 2 + 1);
-    }
-}
-
-SubKey SubKeyIterator::next() {
-    // 鍵を使い切ったら左に25bitローテートし、インデックスを戻す
+IDEAKeyIterator& IDEAKeyIterator::operator++() {
+    ++currentIndex;
     if (currentIndex > 7) {
         rotateKey(25);
         currentIndex = 0;
     }
-    return currentKey[currentIndex++];
+    return *this;
+}
+
+IDEAKeyIterator IDEAKeyIterator::operator++(int) {
+    auto current = *this;
+    this->operator++();
+    return current;
 }
 
 }  // namespace ideaencrypt

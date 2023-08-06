@@ -10,42 +10,22 @@
 
 namespace ideaencrypt {
 
+class IDEAKeyIterator;
+
 /**
- * @brief IDEA暗号の主鍵 (128bit)
+ * @brief IDEA暗号鍵 (128bit)
  */
-class MainKey final {
+class IDEAKey final {
+    friend IDEAKeyIterator;
+
    private:
     /**
      * @brief 鍵格納領域
      */
     uint8_t parts[16];
 
-   public:
     /**
-     * @brief ランダムな値から主鍵を生成
-     */
-    MainKey();
-
-    /**
-     * @brief フレーズから主鍵を生成
-     *
-     * @param phrase 生成元の文字列
-     * @note 引数phraseはnullを除いて16文字であることが望ましく、
-     *       それ以上であれば切り捨て、それ以下であれば同じ文字列を繰り返し参照します。
-     *       (例: `tooolooongphrasee` -> `tooolooongphrase`, `short` -> `shortshortshorts`)
-     */
-    MainKey(const std::string& phrase);
-
-    /**
-     * @brief 配列から主鍵を生成
-     *
-     * @param parts 生成元となる数列
-     * @note 引数partsの要素数は16である必要があります。
-     */
-    MainKey(const uint8_t (&parts)[16]);
-
-    /**
-     * @brief 主鍵の一部を取り出す
+     * @brief 鍵の一部を取り出す
      *
      * @param index 取り出す位置(byte単位, 0~15)
      * @return int 結果
@@ -53,6 +33,39 @@ class MainKey final {
      * @note 範囲外のインデックスが渡された場合は-1が返ります。
      */
     int at(uint8_t index) const;
+
+   public:
+    typedef IDEAKeyIterator iterator;
+
+    /**
+     * @brief ランダムな値から鍵を生成
+     */
+    IDEAKey();
+
+    /**
+     * @brief フレーズから鍵を生成
+     *
+     * @param phrase 生成元の文字列
+     * @note 引数phraseはnullを除いて16文字であることが望ましく、
+     *       それ以上であれば切り捨て、それ以下であれば同じ文字列を繰り返し参照します。
+     *       (例: `tooolooongphrasee` -> `tooolooongphrase`, `short` -> `shortshortshorts`)
+     */
+    IDEAKey(const std::string& phrase);
+
+    /**
+     * @brief 配列から鍵を生成
+     *
+     * @param parts 生成元となる数列
+     * @note 引数partsの要素数は16である必要があります。
+     */
+    IDEAKey(const uint8_t (&parts)[16]);
+
+    /**
+     * @brief 副鍵イテレータを取得
+     *
+     * @return IDEAKey::iterator 生成された副鍵イテレータ
+     */
+    IDEAKey::iterator subKeys();
 };
 
 /**
@@ -61,15 +74,18 @@ class MainKey final {
 using SubKey = uint16_t;
 
 /**
- * @brief 副鍵イテレータ
+ * @brief 鍵イテレータ
  */
-class SubKeyIterator final {
-   private:
-    /**
-     * @brief 副鍵のもとになる主鍵
-     */
-    const MainKey mainKey;
+class IDEAKeyIterator final {
+    friend IDEAKey;
 
+    using iterator_category = std::forward_iterator_tag;
+    using value_type = SubKey;
+    using difference_type = ptrdiff_t;
+    using pointer = SubKey*;
+    using reference = SubKey&;
+
+   private:
     /**
      * @brief 現在参照している副鍵配列
      */
@@ -87,29 +103,21 @@ class SubKeyIterator final {
      */
     void rotateKey(size_t nbits);
 
+    /**
+     * @brief 鍵をもとに副鍵イテレータを初期化
+     *
+     * @param key
+     */
+    IDEAKeyIterator(const IDEAKey key);
+
    public:
-    /**
-     * @brief 主鍵をもとに副鍵イテレータを初期化
-     *
-     * @param mainKey
-     */
-    SubKeyIterator(const MainKey mainKey) : mainKey(mainKey) {
-        reset();
+    IDEAKeyIterator& operator++();
+
+    IDEAKeyIterator operator++(int);
+
+    const value_type& operator*() {
+        return currentKey[currentIndex];
     }
-
-    /**
-     * @brief イテレータを初期状態に戻す
-     *
-     * @note ローテートの状態もリセットされます。
-     */
-    void reset();
-
-    /**
-     * @brief 副鍵を取り出す
-     *
-     * @return SubKey 主鍵から取り出した副鍵
-     */
-    SubKey next();
 };
 
 }  // namespace ideaencrypt
