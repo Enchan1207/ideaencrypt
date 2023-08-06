@@ -17,6 +17,9 @@ namespace ideaencrypt {
  */
 class CipherStream final {
    private:
+    // 暗号鍵
+    const IDEAKey& key;
+
     // 内部バッファ
     std::ostringstream streamBuffer;
 
@@ -25,20 +28,41 @@ class CipherStream final {
     // 暗号ブロック配列
     CipherBlockList cipherBlocks;
 
+    /**
+     * @brief 暗号ブロック配列にデータを通す
+     *
+     * @param input 入力
+     * @param output 暗号ブロック配列に通した結果
+     */
+    void code(const uint16_t (&input)[4], uint16_t (&output)[4]) const;
+
    public:
     /**
      * @brief 暗号ブロック配列をもとに暗号ストリームを初期化
      *
+     * @param key 暗号鍵
      * @param blocks 暗号ブロックのリスト
      */
-    CipherStream(CipherBlockList blocks);
+    CipherStream(const IDEAKey& key, CipherBlockList blocks);
 
     /**
      * @brief IDEA本来の構造で暗号ストリームを初期化
      *
      * @note 暗号ストリームは フルブロック8段 + ハーフブロック1段 の構造で構成されます。
      */
-    CipherStream();
+    CipherStream(const IDEAKey& key);
+
+    /**
+     * @brief 暗号機を暗号化用に構成する
+     *
+     * @note コンストラクタを呼び出す際に自動で呼び出されます。
+     */
+    void configureForEncode();
+
+    /**
+     * @brief 暗号機を復号用に構成する
+     */
+    void configureForDecode();
 
     /**
      * @brief 符号化ストリームへの挿入

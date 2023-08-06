@@ -38,7 +38,7 @@ IDEAKey::IDEAKey(const SubKey (&parts)[8]) {
     }
 }
 
-IDEAKey::iterator IDEAKey::subKeys() {
+IDEAKey::iterator IDEAKey::subKeys() const {
     return IDEAKeyIterator(*this);
 }
 

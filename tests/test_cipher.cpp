@@ -13,7 +13,8 @@ using namespace ideaencrypt;
 
 // 暗号機の構成
 TEST(CipherTest, TestInstantiate) {
-    CipherStream stream;
+    IDEAKey key;
+    CipherStream stream(key);
 
     stream << "Hello, World!"
            << "cipher streaming!";

@@ -60,7 +60,7 @@ class IDEAKey final {
      *
      * @return IDEAKey::iterator 生成された副鍵イテレータ
      */
-    IDEAKey::iterator subKeys();
+    IDEAKey::iterator subKeys() const;
 };
 
 /**

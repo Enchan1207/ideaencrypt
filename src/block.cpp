@@ -9,6 +9,10 @@
 namespace ideaencrypt {
 
 void CipherFullBlock::code(const uint16_t (&input)[4], uint16_t (&output)[4]) const {
+    // TODO: しっかり暗号化処理書く
+    for (size_t i = 0; i < 4; i++) {
+        output[i] = input[i];
+    }
 }
 
 void CipherFullBlock::applyKeyForEncode(IDEAKey::iterator& iterator) {
@@ -27,6 +31,10 @@ void CipherFullBlock::applyKeyForDecode(IDEAKey::iterator& iterator) {
 }
 
 void CipherHalfBlock::code(const uint16_t (&input)[4], uint16_t (&output)[4]) const {
+    // TODO: しっかり暗号化処理書く
+    for (size_t i = 0; i < 4; i++) {
+        output[i] = input[i];
+    }
 }
 
 void CipherHalfBlock::applyKeyForEncode(IDEAKey::iterator& iterator) {
