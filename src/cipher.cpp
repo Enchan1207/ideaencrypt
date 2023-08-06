@@ -4,7 +4,6 @@
 
 #include "ideaencrypt/cipher.hpp"
 
-#include <iostream>
 #include <string>
 
 namespace ideaencrypt {
@@ -90,6 +89,12 @@ std::string CipherStream::operator>>(std::string& data) {
             data += output[i] & 0xFF;
         }
     }
+
+    // 変換結果は8の倍数になってしまっているので、入力の文字数に合わせて後ろのパディングをカット
+    data.resize(bufferedContent.length());
+
+    // バッファをクリア
+    streamBuffer.clear();
 
     return data;
 }

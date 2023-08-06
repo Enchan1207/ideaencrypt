@@ -16,14 +16,15 @@ namespace ideaencrypt {
  * @brief 暗号ストリーム
  */
 class CipherStream final {
+   public:
+    using CipherBlockList = std::list<std::shared_ptr<AbstractCipherBlock>>;
+
    private:
     // 暗号鍵
     const IDEAKey& key;
 
     // 内部バッファ
     std::ostringstream streamBuffer;
-
-    using CipherBlockList = std::list<std::shared_ptr<AbstractCipherBlock>>;
 
     // 暗号ブロック配列
     CipherBlockList cipherBlocks;
