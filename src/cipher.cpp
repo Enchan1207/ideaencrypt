@@ -22,15 +22,17 @@ CipherStream::CipherStream(const IDEAKey& key) : key(key), streamBuffer() {
 
 void CipherStream::configureForEncode() {
     auto iter = key.subKeys();
-    for (auto&& blockptr : cipherBlocks) {
-        blockptr.get()->applyKeyForEncode(iter);
+    for (const auto& block : cipherBlocks) {
+        block->applyKeyForEncode(iter);
     }
 }
 
 void CipherStream::configureForDecode() {
+    // 復号の際は鍵を逆順に入れる
     auto iter = key.subKeys();
-    for (auto&& blockptr : cipherBlocks) {
-        blockptr.get()->applyKeyForDecode(iter);
+    for (auto block = cipherBlocks.rbegin(); block != cipherBlocks.rend(); ++block) {
+        auto dist = std::distance(block, cipherBlocks.rend());
+        (*block)->applyKeyForDecode(iter, dist);
     }
 }
 
@@ -40,25 +42,15 @@ void CipherStream::code(const uint16_t (&input)[4], uint16_t (&output)[4]) const
         output[i] = input[i];
     }
 
-    for (auto&& blockptr : cipherBlocks) {
+    for (const auto& block : cipherBlocks) {
         uint16_t prevOutputs[4] = {0};
-        blockptr.get()->code(output, prevOutputs);
+        block->code(output, prevOutputs);
 
         // 出力をバッファにコピー
         for (size_t i = 0; i < 4; i++) {
             output[i] = prevOutputs[i];
         }
     }
-}
-
-CipherStream& CipherStream::operator<<(int element) {
-    streamBuffer << element;
-    return *this;
-}
-
-CipherStream& CipherStream::operator<<(double element) {
-    streamBuffer << element;
-    return *this;
 }
 
 CipherStream& CipherStream::operator<<(std::ostream& (*f)(std::ostream&)) {
