@@ -94,7 +94,7 @@ std::string CipherStream::operator>>(std::string& data) {
     data.resize(bufferedContent.length());
 
     // バッファをクリア
-    streamBuffer.clear();
+    streamBuffer.str(std::string());
 
     return data;
 }
