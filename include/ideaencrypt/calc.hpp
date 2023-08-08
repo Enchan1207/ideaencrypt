@@ -34,7 +34,7 @@ uint16_t mulinv(const uint16_t& number);
  *
  * @note Low-Highアルゴリズムにより演算を行います。
  */
-uint16_t mul(const uint16_t& x, const uint16_t& y);
+uint16_t lhmul(const uint16_t& x, const uint16_t& y);
 
 }  // namespace ideaencrypt
 

@@ -5,9 +5,9 @@
 #ifndef IDEAENCRYPT_CIPHER_H
 #define IDEAENCRYPT_CIPHER_H
 
-#include <list>
 #include <memory>
 #include <sstream>
+#include <vector>
 
 #include "ideaencrypt/block.hpp"
 
@@ -18,7 +18,7 @@ namespace ideaencrypt {
  */
 class CipherStream final {
    public:
-    using CipherBlockList = std::list<std::shared_ptr<AbstractCipherBlock>>;
+    using CipherBlockList = std::vector<std::shared_ptr<AbstractCipherBlock>>;
 
    private:
     // 暗号鍵
@@ -77,8 +77,6 @@ class CipherStream final {
         streamBuffer << element;
         return *this;
     }
-    CipherStream& operator<<(int element);
-    CipherStream& operator<<(double element);
 
     /**
      * @brief 符号化ストリームへのテンプレート関数の挿入
