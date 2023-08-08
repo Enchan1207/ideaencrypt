@@ -68,7 +68,9 @@ std::string CipherStream::operator>>(std::string& data) {
         // uint16_tの配列に変換する
         uint16_t inputBuffer[4] = {0};
         for (size_t i = 0; i < 4; i++) {
-            inputBuffer[i] = (part[i * 2] << 8) | part[i * 2 + 1];
+            auto hs = static_cast<uint8_t>(part[i * 2]);
+            auto ls = static_cast<uint8_t>(part[i * 2 + 1]);
+            inputBuffer[i] = (hs << 8) | ls;
         }
 
         // 符号化

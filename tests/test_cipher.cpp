@@ -171,15 +171,15 @@ TEST(CipherTest, TestProcessKnownMessage) {
 
 // 任意のメッセージの暗号化/復号
 TEST(CipherTest, TestProcessMessages) {
+    // 暗号ストリームを構成
     const IDEAKey key("encryptionkey");
     CipherStream stream(key);
 
     // ストリームに挿入して暗号文を入手
-    std::string message = "ideacrypideacrypcryptestcryptest";
+    std::string message = "ideacrypideacrypcryptestcryptestidea";
     stream << message;
     std::string encrypted;
     stream >> encrypted;
-    dumpStringAsHex(encrypted);
 
     // 復号用にストリームを再構成して挿入し、復号結果を入手
     stream.configureForDecode();
@@ -188,7 +188,18 @@ TEST(CipherTest, TestProcessMessages) {
     stream >> decrypted;
 
     // 確認
-    EXPECT_EQ(message.size(), decrypted.size());
+    std::cout << "Message : " << std::endl;
     dumpStringAsHex(message);
+    std::cout << std::endl;
+    std::cout << "Encrypted: " << std::endl;
+    dumpStringAsHex(encrypted);
+    std::cout << std::endl;
+    std::cout << "Decrypted: " << std::endl;
     dumpStringAsHex(decrypted);
+    std::cout << std::endl;
+
+    // 検証
+    for (size_t i = 0; i < decrypted.length(); i++) {
+        EXPECT_EQ(static_cast<uint8_t>(message[i]), static_cast<uint8_t>(decrypted[i]));
+    }
 }
