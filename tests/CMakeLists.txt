@@ -13,8 +13,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 include(GoogleTest)
 
-## 外部依存関係を追加...
-
 # テストターゲットの構成
 add_executable(ideaencrypt_test)
 target_sources(ideaencrypt_test PRIVATE
