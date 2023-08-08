@@ -95,6 +95,22 @@ class CipherStream final {
      * @return std::string
      */
     std::string operator>>(std::string& data);
+
+    /**
+     * @brief 暗号ストリームのシリアライズ
+     *
+     * @return std::string
+     * @note 暗号ブロックの構造のみシリアライズされます(鍵は保存されません)。
+     */
+    std::string serialize() const;
+
+    /**
+     * @brief 暗号ストリームのデシリアライズ
+     * @param serialized
+     * @param deserialized
+     * @return bool
+     */
+    static bool deserialize(const std::string& serialized, CipherStream& deserialized);
 };
 
 }  // namespace ideaencrypt

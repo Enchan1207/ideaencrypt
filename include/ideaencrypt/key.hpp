@@ -6,7 +6,6 @@
 #define IDEAENCRYPT_KEY_H
 
 #include <cstdint>
-#include <sstream>
 #include <string>
 
 namespace ideaencrypt {
@@ -28,15 +27,12 @@ class IDEAKey final {
     /**
      * @brief 鍵格納領域
      */
-    SubKey parts[8];
+    SubKey parts[8] = {0};
 
    public:
     using iterator = IDEAKeyIterator;
 
-    /**
-     * @brief ランダムな値から鍵を生成
-     */
-    IDEAKey();
+    IDEAKey() = default;
 
     /**
      * @brief フレーズから鍵を生成
@@ -71,9 +67,9 @@ class IDEAKey final {
     std::string serialize() const;
 
     /**
-     * @brief シリアライズされた文字列からIDEAKeyのインスタンスを作成して返す
+     * @brief 鍵情報のデシリアライズ
      * @param serialized
-     * @param[out] deserialized
+     * @param deserialized
      * @return bool
      */
     static bool deserialize(const std::string& serialized, IDEAKey& deserialized);

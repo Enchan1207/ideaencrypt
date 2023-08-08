@@ -118,6 +118,41 @@ TEST(CipherTest, TestConfigureDecodeBlock) {
     EXPECT_TRUE(succeeded);
 }
 
+// 暗号ストリームのシリアライズ・デシリアライズ
+TEST(TestCipherBlock, TestSerializeCipherStream) {
+    IDEAKey key("encryptionKey");
+
+    // 先にIDEAと同じ構成のストリームをデシリアライズする
+    std::string serialized = "ffffffffh";
+    CipherStream::CipherBlockList list;
+    CipherStream deserialized(key, list);
+    EXPECT_TRUE(CipherStream::deserialize(serialized, deserialized));
+
+    // シリアライズし、デシリアライズ元と同じモデルになっているか検証
+    auto reserialized = deserialized.serialize();
+    for (size_t i = 0; i < serialized.length(); i++) {
+        EXPECT_EQ(serialized[i], reserialized[i]);
+    }
+
+    // デフォルトコンストラクタで作成した普通のIDEAストリームを生成し、暗号化
+    CipherStream ideaStream(key);
+    std::string message = "Hello, IDEA!";
+    ideaStream << message;
+    std::string encrypted;
+    ideaStream >> encrypted;
+
+    // デシリアライズしたストリームで復号できるか?
+    deserialized.configureForDecode();
+    deserialized << encrypted;
+    std::string decrypted;
+    deserialized >> decrypted;
+
+    // 検証
+    for (size_t i = 0; i < message.length(); i++) {
+        EXPECT_EQ(message[i], decrypted[i]);
+    }
+}
+
 // 既知のメッセージの暗号化/復号
 TEST(CipherTest, TestProcessKnownMessage) {
     IDEAKey key("fujisawayoshinori");
@@ -176,7 +211,7 @@ TEST(CipherTest, TestProcessMessages) {
     CipherStream stream(key);
 
     // ストリームに挿入して暗号文を入手
-    std::string message = "ideacrypideacrypcryptestcryptestidea";
+    std::string message = "International Data Encryption Algorithm";
     stream << message;
     std::string encrypted;
     stream >> encrypted;

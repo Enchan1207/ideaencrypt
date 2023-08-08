@@ -13,14 +13,6 @@ using namespace ideaencrypt;
 
 // 鍵の生成
 TEST(KeyGenerationTest, TestGenerateKey) {
-    // 乱数で初期化
-    auto randomKey = IDEAKey();
-    auto randomSubKey = randomKey.subKeys();
-    for (size_t i = 0; i < 8; i++, randomSubKey++) {
-        std::cout << std::hex << std::setw(4) << std::setfill('0') << *randomSubKey << " ";
-    }
-    std::cout << std::endl;
-
     // フレーズをもとに初期化
     std::string shortPhrase = "short";
     auto shortPhraseKey = IDEAKey(shortPhrase);

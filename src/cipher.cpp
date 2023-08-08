@@ -4,6 +4,7 @@
 
 #include "ideaencrypt/cipher.hpp"
 
+#include <sstream>
 #include <string>
 
 namespace ideaencrypt {
@@ -88,6 +89,48 @@ std::string CipherStream::operator>>(std::string& data) {
     streamBuffer.str(std::string());
 
     return data;
+}
+
+std::string CipherStream::serialize() const {
+    std::ostringstream ss;
+    for (const auto& block : cipherBlocks) {
+        if (auto fullBlock = std::dynamic_pointer_cast<CipherFullBlock>(block)) {
+            ss << "f";
+        } else if (auto halfBlock = std::dynamic_pointer_cast<CipherHalfBlock>(block)) {
+            ss << "h";
+        } else {
+            ss << "?";
+        }
+    }
+    return ss.str();
+}
+
+bool CipherStream::deserialize(const std::string& serialized, CipherStream& deserialized) {
+    CipherBlockList blocks;
+    bool isValid = true;
+
+    // 一文字ずつ読んでブロックを追加していく
+    for (const auto& c : serialized) {
+        switch (c) {
+            case 'f':
+                blocks.push_back(std::make_shared<CipherFullBlock>(CipherFullBlock()));
+                break;
+
+            case 'h':
+                blocks.push_back(std::make_shared<CipherHalfBlock>(CipherHalfBlock()));
+                break;
+
+            default:
+                isValid = true;
+                break;
+        }
+    }
+
+    // データに不正値がなければ暗号機に挿入
+    if (isValid) {
+        deserialized.cipherBlocks.swap(blocks);
+    }
+    return isValid;
 }
 
 }  // namespace ideaencrypt
