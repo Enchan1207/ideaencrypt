@@ -84,9 +84,6 @@ std::string CipherStream::operator>>(std::string& data) {
         }
     }
 
-    // 変換結果は8の倍数になってしまっているので、入力の文字数に合わせて後ろのパディングをカット
-    data.resize(bufferedContent.length());
-
     // バッファをクリア
     streamBuffer.str(std::string());
 
