@@ -6,6 +6,7 @@
 #define IDEAENCRYPT_KEY_H
 
 #include <cstdint>
+#include <sstream>
 #include <string>
 
 namespace ideaencrypt {
@@ -61,6 +62,21 @@ class IDEAKey final {
      * @return IDEAKey::iterator 生成された副鍵イテレータ
      */
     IDEAKey::iterator subKeys() const;
+
+    /**
+     * @brief 鍵情報のシリアライズ
+     *
+     * @return std::string
+     */
+    std::string serialize() const;
+
+    /**
+     * @brief シリアライズされた文字列からIDEAKeyのインスタンスを作成して返す
+     * @param serialized
+     * @param[out] deserialized
+     * @return bool
+     */
+    static bool deserialize(const std::string& serialized, IDEAKey& deserialized);
 };
 
 /**

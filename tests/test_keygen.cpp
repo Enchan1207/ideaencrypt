@@ -62,6 +62,31 @@ TEST(KeyGenerationTest, TestGenerateKey) {
     }
 }
 
+TEST(KeyGenerationTest, TestSerializeKey) {
+    // 鍵をシリアライズ
+    IDEAKey key("encryptionkey");
+    std::string serialized = key.serialize();
+
+    // シリアライズした鍵データから鍵を生成
+    IDEAKey dkey;
+    EXPECT_TRUE(IDEAKey::deserialize(serialized, dkey));
+
+    // 各鍵のイテレータを構築
+    auto kiter = key.subKeys();
+    auto diter = dkey.subKeys();
+
+    // 副鍵をいくつか生成して比較
+    for (size_t i = 0; i < 8; i++, kiter++, diter++) {
+        auto ksub = *kiter;
+        auto dsub = *diter;
+        EXPECT_EQ(ksub, dsub);
+    }
+
+    // 鍵データを改竄
+    std::string hacked = serialized.substr(0, 10);
+    EXPECT_FALSE(IDEAKey::deserialize(hacked, dkey));
+}
+
 // 副鍵の生成
 TEST(KeyGenerationTest, TestGenerateSubKeys) {
     IDEAKey key({0, 2, 0, 3, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1});
