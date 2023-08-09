@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
 
     // outputは必須
     if (options.find("output") == options.end()) {
-        std::cout << "option output is not specified." << std::endl;
+        std::cout << "option 'output' is not specified." << std::endl;
         printHelp();
         return 1;
     }

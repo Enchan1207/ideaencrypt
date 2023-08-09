@@ -121,7 +121,7 @@ bool CipherStream::deserialize(const std::string& serialized, CipherStream& dese
                 break;
 
             default:
-                isValid = true;
+                isValid = false;
                 break;
         }
     }
