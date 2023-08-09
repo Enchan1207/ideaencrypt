@@ -31,5 +31,5 @@ macro(add_ideaencrypt_cli executable_name)
     )
 endmacro()
 
-add_ideaencrypt_cli(keygen)
+add_ideaencrypt_cli(ideakeygen)
 add_ideaencrypt_cli(idea)
