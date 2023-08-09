@@ -27,15 +27,12 @@ class IDEAKey final {
     /**
      * @brief 鍵格納領域
      */
-    SubKey parts[8];
+    SubKey parts[8] = {0};
 
    public:
     using iterator = IDEAKeyIterator;
 
-    /**
-     * @brief ランダムな値から鍵を生成
-     */
-    IDEAKey();
+    IDEAKey() = default;
 
     /**
      * @brief フレーズから鍵を生成
@@ -61,6 +58,21 @@ class IDEAKey final {
      * @return IDEAKey::iterator 生成された副鍵イテレータ
      */
     IDEAKey::iterator subKeys() const;
+
+    /**
+     * @brief 鍵情報のシリアライズ
+     *
+     * @return std::string
+     */
+    std::string serialize() const;
+
+    /**
+     * @brief 鍵情報のデシリアライズ
+     * @param serialized
+     * @param deserialized
+     * @return bool
+     */
+    static bool deserialize(const std::string& serialized, IDEAKey& deserialized);
 };
 
 /**
