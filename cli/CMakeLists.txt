@@ -17,6 +17,7 @@ macro(add_ideaencrypt_cli executable_name)
     add_executable(${executable_name})
     target_sources(${executable_name} PRIVATE
         ${executable_name}.cpp
+        argparse.cpp
     )
     target_include_directories(${executable_name} PRIVATE
         ${PROJECT_SOURCE_DIR}/include
