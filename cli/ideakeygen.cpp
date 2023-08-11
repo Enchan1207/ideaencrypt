@@ -72,29 +72,17 @@ int main(int argc, char* argv[]) {
     std::cout << "encryption subkeys:" << std::endl;
     auto encsubkeys = key.subKeys();
     for (size_t i = 0; i < 52; i++) {
-        std::cout << std::hex << std::setw(2) << std::setfill('0')
+        std::cout << std::hex << std::setw(4) << std::setfill('0')
                   << encsubkeys.next() << " ";
 
-        if ((i + 1) % 16 == 0) {
+        if ((i + 1) % 8 == 0) {
             std::cout << std::endl;
         }
     }
     std::cout << std::endl
               << std::endl;
-    std::cout << "decryption subkeys:" << std::endl;
-    auto decsubkeys = key.subKeys();
-    for (size_t i = 0; i < 52; i++) {
-        std::cout << std::hex << std::setw(2) << std::setfill('0')
-                  << decsubkeys.next() << " ";
-
-        if ((i + 1) % 16 == 0) {
-            std::cout << std::endl;
-        }
-    }
-    std::cout << std::endl
-              << std::endl;
-    std::cout << "NOTE: these subkeys were not stored in key file. "
-              << "key file only contains main key (first 8 bytes)." << std::endl;
+    std::cout << "NOTE: these subkeys won’t be stored in key file." << std::endl
+              << "it only contains main key (first 8 bytes)." << std::endl;
 
     // ファイルに出力
     auto filename = options.find("output")->second;
